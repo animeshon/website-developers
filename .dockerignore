@@ -1,0 +1,8 @@
+.cache.
+.codefresh.yaml
+.dockerignore
+.git
+.gitignore
+Dockerfile
+*.md
+terraform
