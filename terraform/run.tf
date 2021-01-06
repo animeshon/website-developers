@@ -1,3 +1,8 @@
+locals {
+  project         = data.terraform_remote_state.general.outputs.project_id
+  service_account = data.terraform_remote_state.general.outputs.google_compute_default_service_account_email
+}
+
 
 # NOTE: A new id is generated each time we switch to a new image tag.
 resource "random_id" "developers" {
@@ -9,7 +14,7 @@ resource "random_id" "developers" {
 }
 
 resource "google_cloud_run_service" "developers" {
-  project  = local.project_id
+  project  = local.project
   location = "europe-west1"
   name     = "developers-animeshon-com"
 
@@ -19,12 +24,12 @@ resource "google_cloud_run_service" "developers" {
         "autoscaling.knative.dev/maxScale" = "5"
         "run.googleapis.com/client-name"   = "cloud-console"
       }
-      name = format("developers-animeshon-com-%s", random_id.developers.hex) 
+      name = format("developers-animeshon-com-%s", random_id.developers.hex)
     }
 
     spec {
       container_concurrency = 80
-      service_account_name  = local.sa_compute_email
+      service_account_name  = local.service_account
 
       containers {
         image = format("gcr.io/gcp-animeshon-general/developers-animeshon-com:%s", var.image_tag)
@@ -57,7 +62,7 @@ resource "google_cloud_run_domain_mapping" "developers" {
   name     = "developers.animeshon.com"
 
   metadata {
-    namespace = local.project_id
+    namespace = local.project
   }
 
   spec {
