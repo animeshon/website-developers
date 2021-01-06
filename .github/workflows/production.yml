@@ -45,7 +45,7 @@ jobs:
     - name: Setup the Terraform CLI
       uses: hashicorp/setup-terraform@v1
       with:
-        cli_config_credentials_token: ${{ secrets.TF_CREDENTIALS }}
+        cli_config_credentials_token: ${{ env.TF_CREDENTIALS }}
 
     - name: Initialize the Terraform working directory
       working-directory: ./terraform
