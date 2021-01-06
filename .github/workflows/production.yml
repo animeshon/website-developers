@@ -20,7 +20,7 @@ jobs:
     - name: Clone the repository code
       uses: actions/checkout@v2
       with:
-        repository: animeshon/website-about
+        repository: animeshon/template-homepage
         token: ${{ secrets.WORKFLOW_GITHUB_TOKEN }}
 
     - name: Build and push Docker images to Google Cloud Registry
