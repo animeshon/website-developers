@@ -1,9 +1,11 @@
-name: Production CI
+name: Developers Homepage [Tier 0]
 
 env:
-  PROJECT_ID: ${{ secrets.PROJECT_ID_TIER_0 }}
-  GCR_CREDENTIALS: ${{ secrets.GCR_GENERAL_TIER_0_CREDENTIALS }}
-  TF_WORKSPACE: tier-0
+  PROJECT_ID:       ${{ secrets.TIER_0_GENERAL_PROJECT }}
+  GCR_CREDENTIALS:  ${{ secrets.TIER_0_GENERAL_REGISTRY_CREDENTIALS }}
+  
+  TF_WORKSPACE:     ${{ secrets.TIER_0_TERRAFORM_WORKSPACE }}
+  TF_CREDENTIALS:   ${{ secrets.TIER_0_TERRAFORM_CREDENTIALS }}
 
 on:
   push:
@@ -16,6 +18,9 @@ jobs:
     steps:
     - name: Clone the repository code
       uses: actions/checkout@v2
+      with:
+        repository: animeshon/website-about
+        token: ${{ secrets.WORKFLOW_GITHUB_TOKEN }}
 
     - name: Build and push Docker images to Google Cloud Registry
       uses: docker/build-push-action@v1
@@ -25,6 +30,7 @@ jobs:
         registry: gcr.io
         repository: ${{ env.PROJECT_ID }}/developers-animeshon-com
         tags: latest,${{ github.sha }}
+        dockerfile: Dockerfile.developers
         tag_with_ref: true
         tag_with_sha: true
 
