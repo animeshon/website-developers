@@ -10,7 +10,11 @@ env:
 on:
   push:
     branches: [ master ]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: 'SHA of the commit that triggered this workflow'     
+        required: true
 
 jobs:
   build:
@@ -30,7 +34,7 @@ jobs:
         password: ${{ env.GCR_CREDENTIALS }}
         registry: gcr.io
         repository: ${{ env.PROJECT_ID }}/developers-animeshon-com
-        tags: latest,${{ github.sha }}
+        tags: latest,${{ github.event.inputs.sha || github.sha }}
         dockerfile: Dockerfile.developers
         tag_with_ref: true
         tag_with_sha: true
@@ -58,7 +62,7 @@ jobs:
       id: vars
       run: |-
         cat > pipeline.auto.tfvars <<EOF
-        image_tag = "${{ github.sha }}"
+        image_tag = "${{ github.event.inputs.sha || github.sha }}"
         EOF
 
     - name: Apply the Terraform execution plan
